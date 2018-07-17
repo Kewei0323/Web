@@ -1,23 +1,19 @@
 from bs4 import BeautifulSoup
 import requests
 
-url = 'http://hzdt.ustc.edu.cn/index.php?m=content&c=index&a=lists&catid=12'
-urls = ['http://hzdt.ustc.edu.cn/index.php?m=content&c=index&a=lists&catid=12&page={}'.format(str(i)) for i in range(2, 15, 1)]
-# get_vacationRentals
-def get_pages(url, data=None):
-    wb_data = requests.get(url)
-    soup = BeautifulSoup(wb_data.text, 'lxml')
-    titles = soup.select('div.show-pic-con-list-title > p')
-    imgs = soup.select('img[width="188"]')
-    times = soup.select('p.show-pic-con-list-time-2')
-    # cates = soup.select('li.tag')
+url = 'https://www.tripadvisor.com/Travel_Guide-g60763-New_York_City_New_York.html'
 
-    for title, img, time in zip(titles, imgs, times):
-        data = {
-            'title': title.get_text(),
-            'img': img.get('src'),
-            'time': time.get_text(),
-        }
-        print(data)
-for single_url in urls:
-    get_pages(single_url)
+# get_vacationRentals
+wb_data = requests.get(url)
+soup = BeautifulSoup(wb_data.text, 'lxml')
+titles = soup.select('h2.title')
+imgs = soup.select('div.photo')
+cates = soup.select('li.tag')
+
+for title, img, cate in zip(titles, imgs, cates):
+    data = {
+        'title': title.get_text(),
+        'img': img.get('src'),
+        'cate': list(cate.stripped_strings),
+    }
+    print(data)
